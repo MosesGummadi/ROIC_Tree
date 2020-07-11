@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Math Canvas</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,900" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
+  <script src="https://craig.global.ssl.fastly.net/js/mousetrap/mousetrap.min.js?a4098"></script>
+  <script src="https://unpkg.com/draggabilly@2/dist/draggabilly.pkgd.min.js"></script>
+  <script type="text/javascript" src="bower_components/svg.js/dist/svg.min.js"></script>
+  <script type="text/javascript" src="bower_components/svg.draggable.js/dist/svg.draggable.min.js"></script>
+  <script type="text/javascript" src="node_modules/svg.panzoom.js/dist/svg.panzoom.min.js"></script>
+  <script type="text/javascript" src="node_modules/hot-formula-parser/dist/formula-parser.min.js"></script>
+  <script type="text/javascript" src="bower_components/svg.select.min.js"></script>
+  <script type="text/javascript" src="bower_components/svg.resize.min.js"></script>
+  <script src="bower_components/svg.connectable.js"></script>
+  <!-- <script src="bower_components/jquery.draggable.js"></script> -->
+  <style>
+    .ui.dimmer {
+      background-color: rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="drawing"></div>
+  <div id="palette">
+    <div id="palette_canvas">
+      
+    </div>
+    <form action="#" onsubmit="return saveCanvas(this)" style="padding: 50px 20px 80px;border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;">
+      <div class="ui large icon fluid input">
+        <input type="text" name="title" placeholder="Canvas Title ">
+        <i class="object group icon"></i>
+      </div> <br>
+      <div class="ui form">
+        <div class="grouped fields">
+          <label style="font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif !important">Permissions</label>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" name="dragBoxes" value="true" checked="checked">
+              <label style="font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif !important">Can Drag Boxes</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" name="changeValue" value="true" >
+              <label style="font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif !important">Can Change Value</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" name="changeFormula" value="true" >
+              <label style="font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif !important">Can Change Formula</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" name="changeLabel" value="true" >
+              <label style="font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif !important">Can Change Label</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" name="deleteBoxes" value="true" >
+              <label style="font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif !important">Can Delete Boxes</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" name="deleteArrows" value="true" >
+              <label style="font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif !important">Can Delete Arrows</label>
+            </div>
+          </div>
+        </div>
+      </div> <br><br>
+      <button class="ui primary button right floated">
+        Share
+      </button>
+    </form>
+  </div>
+  <div class="ui small modal share">
+    <div class="header">
+      Shareable Link
+    </div>
+    <div class="content">
+      <a id="shareableLink" target="_blank" href="http://webonick:8081/#/587a12f76189a849cde1f2e169dcea1e" style="font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif !important">http://webonick:8081/#/587a12f76189a849cde1f2e169dcea1e</a>
+    </div>
+  </div>
+  <div class="ui mini newbox modal">
+    <!-- <i class="close icon"></i> -->
+    <div class="header">
+      Box Settings
+    </div>
+    <div class="content">
+      <form action="#" id="newBoxForm">
+        <div class="ui left fluid icon input">
+          <input type="text" placeholder="Box Label..." name="label">
+          <i class="tag icon"></i>
+        </div> <br>
+        <!-- <div class="ui toggle checkbox">
+          <input type="checkbox" name="haveFormula" checked="">
+          <label>Formula</label>
+        </div> <br> <br> -->
+        <div class="ui left fluid icon input">
+          <input type="text" placeholder="Excel Style Formula" class="formula" name="formula">
+          <i class="calculator icon"></i>
+        </div>  <br>
+        <!-- <div class="ui toggle checkbox">
+          <input type="checkbox" name="haveValues" checked="">
+          <label>Values</label>
+        </div> <br> <br> -->
+        <div class="ui left fluid icon input">
+          <input type="text" placeholder="Value" name="val1" class="values">
+          <i class="angle double left icon"></i>
+        </div> <br>
+        <div class="ui left fluid icon input">
+          <input type="text" placeholder="Value" name="val2" class="values">
+          <i class="angle double left icon"></i>
+        </div>
+      </form>
+    </div>
+    <div class="actions">
+      <div class="ui negative button" onclick="$('.ui.modal').modal('hide');">Cancel</div>
+      <div class="ui positive button" onclick="addNewBox()">OK</div>
+    </div>
+  </div>
+  <div class="ui mini newbox_single modal">
+    <!-- <i class="close icon"></i> -->
+    <div class="header">
+      Box Settings
+    </div>
+    <div class="content">
+      <form action="#" id="newBoxSingleForm">
+        <div class="ui left fluid icon input">
+          <input type="text" placeholder="Box Label..." name="label">
+          <i class="tag icon"></i>
+        </div> <br>
+        <!-- <div class="ui toggle checkbox">
+          <input type="checkbox" name="haveFormula" checked="">
+          <label>Formula</label>
+        </div> <br> <br> -->
+        <div class="ui left fluid icon input">
+          <input type="text" placeholder="Excel Style Formula" class="formula" name="formula">
+          <i class="calculator icon"></i>
+        </div>  <br>
+        <!-- <div class="ui toggle checkbox">
+          <input type="checkbox" name="haveValues" checked="">
+          <label>Values</label>
+        </div> <br> <br> -->
+        <div class="ui left fluid icon input">
+          <input type="text" placeholder="Value" name="val1" class="values">
+          <i class="angle double left icon"></i>
+        </div> <br>
+      </form>
+    </div>
+    <div class="actions">
+      <div class="ui negative button" onclick="$('.ui.modal').modal('hide');">Cancel</div>
+      <div class="ui positive button" onclick="addNewBoxSingle()">OK</div>
+    </div>
+  </div>
+  <div class="ui mini editbox modal">
+    <!-- <i class="close icon"></i> -->
+    <div class="header">
+      Box Settings
+    </div>
+    <div class="content">
+      <form action="#" class="ui form" id="editBoxForm">
+        <div class="ui left fluid icon labeled input">
+          <div class="ui label" style="font-family: Lato;width: 80px;">
+            Color
+          </div>
+          <input type="color" placeholder="Value" name="color" style="height: 36px;padding: 0;" value="#0365c0">
+          <i class="angle double left icon"></i>
+        </div> <br>
+        <div class="ui left fluid icon labeled input">
+          <div class="ui label" style="font-family: Lato;width:80px;">
+            Label
+          </div>
+          <input type="text" placeholder="Box Label..." name="label">
+          <i class="tag icon"></i>
+        </div> <br>
+        <div class="ui left fluid icon labeled input">
+          <div class="ui label" style="font-family: Lato;width: 80px;">
+            Formula
+          </div>
+          <input type="text" placeholder="Excel Style Formula" name="formula">
+          <i class="calculator icon"></i>
+        </div>  <br>
+        <div class="ui left fluid icon labeled input">
+          <div class="ui label" style="font-family: Lato;width: 80px;">
+            Val1
+          </div>
+          <input type="text" placeholder="Value" name="val1">
+          <i class="angle double left icon"></i>
+        </div> <br>
+        <div class="ui left fluid icon labeled input">
+          <div class="ui label" style="font-family: Lato;width: 80px;">
+            Val2
+          </div>
+          <input type="text" placeholder="Value" name="val2">
+          <i class="angle double left icon"></i>
+        </div> <br>
+        <div class="three fields">
+          <div class="field">
+            <label style="font-family: Lato;"">Prefix</label>
+            <input type="text" placeholder="Prefix" name="prefix">
+          </div>
+          <div class="field">
+            <label style="font-family: Lato;"">Suffix</label>
+            <input type="text" placeholder="Suffix" name="suffix">
+          </div>
+          <div class="field">
+            <label style="font-family: Lato;"">Decimals</label>
+            <select placeholder="Decimals" name="decimals">
+              <option value="0" selected="selected">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+        </div>
+        <div class="two fields" style="margin-bottom: 0;">
+          <div class="field">
+            <label style="font-family: Lato;"">Comma (100,000)</label>
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="seperator" value="3">
+              <label></label>
+            </div>
+          </div>
+          <div class="field">
+            <label style="font-family: Lato;"">Negative <b style="color: #f00;">(1.23)</b></label>
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="negative" value="true">
+              <label></label>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="ui toggle checkbox">
+          <input type="checkbox" name="haveValues" checked="">
+          <label>Values</label>
+        </div> <br> <br> -->
+      </form>
+    </div>
+    <div class="actions">
+      <div class="ui negative button" onclick="$('.ui.modal').modal('hide');" style="background-color: #dcdcdc;color: #000;">Cancel</div>
+      <div class="ui primary button" onclick="editBox()">OK</div>
+    </div>
+  </div>
+  <div class="ui vertical buttons" id="contextMenu">
+    <button class="ui button" id="contextCut" onclick="cutSelection()">Cut</button>
+    <button class="ui button" id="contextCopy" onclick="copySelection()">Copy</button>
+    <button class="ui button" id="contextPaste" onclick="pasteSelection(event)">Paste</button>
+    <button class="ui button" id="contextDelete" onclick="deleteSelection()">Delete</button>
+    <button class="ui button" id="contextProperties" onclick="showPropertiesSelection()">Properties</button>
+  </div>
+  <!-- <div id="home"> -->
+    <!-- <div id="button" class="ui activator button">Activator</div> -->
+  <!-- </div> -->
+  <script type="text/javascript" src="index.js"></script>
+</body>
+</html>

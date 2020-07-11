@@ -1,0 +1,60 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto Condensed';
+  font-weight: 700;
+}
+html, body {
+  height: 100vh;
+  overflow: hidden;
+}
+#home {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /*z-index: 10;*/
+}
+#palette {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  width: 200px;
+  top: 0;
+  bottom: 0;
+  /* border-right: 1px solid #000; */
+  box-shadow: 0px 0px 16px -5px #000;
+}
+#drawing {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  left: 200px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+#foreignContent {
+  position: fixed;
+}
+#contextMenu {
+  position: fixed;
+  display: none;
+  border: 1px solid #ccc;
+}
+#contextMenu button {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+#contextMenu button:hover {
+  background-color: #eee;
+}
+#contextMenu button:first-child {
+  border-top: 1px solid #ccc;
+}
+#contextMenu button:first-child, #contextMenu button:last-child {
+  border-radius: 0;
+}
